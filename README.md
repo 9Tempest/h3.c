@@ -9,6 +9,11 @@ Prompt-to-video/audio, first/last-frame conditioning, and ordered Ref2VA
 image/video/audio references work end to end. The current work is incremental
 H3-specific Metal performance and memory optimization on M3 Max and M5 Max.
 
+This fork also contains a [512-square, five-second M5 Max performance report](docs/performance/m5-max-512-5s/README.md),
+two small generated samples, and a [portable measurement/evaluation harness](tools/perf/README.md).
+The report compares the clean pinned upstream BF16 and INT8 paths; its single
+paired observation is not a general speedup or perceptual quality claim.
+
 ## Tutorial
 
 ### 1. Build and inspect the model

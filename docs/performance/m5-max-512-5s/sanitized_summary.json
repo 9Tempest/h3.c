@@ -1,0 +1,2123 @@
+{
+  "schema_version": 1,
+  "title": "M5 Max h3.c 512-square 5-second paired observation",
+  "date": "2026-10-18",
+  "measurement_scope": {
+    "process_repetitions_per_mode": 1,
+    "seeds": [
+      42
+    ],
+    "run_order": [
+      "bf16",
+      "upstream-int8"
+    ],
+    "independent_rerun": "not measured",
+    "compile_free_steady_state": "not measured",
+    "per_operation_device_time": "not measured",
+    "quality": "not evaluated",
+    "portable_harness": "Adapted after these runs; original runner and harness digests retained, not claimed byte-identical."
+  },
+  "recipe": {
+    "benchmark": "fox-winter-t2va-v1",
+    "prompt": "A red fox walks through fresh snow in a pine forest. Medium tracking shot, natural winter light, realistic fur, soft footsteps and wind.",
+    "seed": 42,
+    "width": 512,
+    "height": 512,
+    "steps": 20,
+    "active_dit_blocks": 50,
+    "reuse": 1,
+    "core_reuse": 1,
+    "token_reduction": false,
+    "use_reference_rope": true,
+    "internal_canvas": [
+      512,
+      512
+    ],
+    "shape": {
+      "fps": 24,
+      "requested_seconds": 5.0,
+      "requested_frames": 120,
+      "aligned_frames": 124,
+      "aligned_seconds": 5.166666666666667,
+      "video_latent_t": 37,
+      "audio_latent_t": 207,
+      "video_tokens": 9472,
+      "stereo_audio_tokens": 414,
+      "text_tokens": null,
+      "packed_sequence_tokens": null,
+      "shape_evidence": "source-derived h3_host.c; text/packed tokens not logged by pinned CLI"
+    },
+    "runtime_overrides": {
+      "H3_NAX": "qkv-attn",
+      "H3_NAX_DIAGNOSTIC": "1"
+    }
+  },
+  "model": {
+    "repository": "MiniMaxAI/MiniMax-H3",
+    "revision": "42ed227ee7df40d41602854ae760620d6eb651fe",
+    "manifest_sha256": "7597d33ca71af128705e802150b4b39395cf20f96bddc45d2041d668145c27be",
+    "weights": "Not redistributed; approximately 144 GB original checkpoint"
+  },
+  "geometry_note": "9472 video + 414 stereo-audio + 28 prompt rows = 9914 logical packed rows. Prompt rows were checked separately with the pinned CPU tokenizer; not per-operation runtime trace.",
+  "runs": [
+    {
+      "mode": "bf16",
+      "status": "completed",
+      "started_utc": "2026-10-18T22:15:24.817432+00:00",
+      "finished_utc": "2026-10-18T22:23:43.278557+00:00",
+      "environment": {
+        "system": "Darwin",
+        "release": "27.0.0",
+        "machine": "arm64",
+        "python": "3.12.15",
+        "chip": "Apple M5 Max",
+        "memory_bytes": 137438953472,
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "xcode": "Xcode 27.1\nBuild version 27A9275",
+        "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+        "ffprobe": "ffprobe version 9.0.2 Copyright (c) 2007-2026 the FFmpeg developers"
+      },
+      "upstream": {
+        "revision": "8974cc055ea9c02fcd14cc27dfda3e1027c05153",
+        "dirty": false,
+        "status": "",
+        "source_sha256": "6e8931b5d88abfc40ea4f38c3c2c603a5b1ae93156f19b653cbfe9f26c8814b5",
+        "binary_sha256": "ab14650a798cb33f83eb274cb4b17340d7f481260df9d50013db38c9e4359393",
+        "repository": "https://github.com/antirez/h3.c"
+      },
+      "original_runner_sha256": "194f80be30280b198a2a85b7d541c040c33e30fc1b4a7c86c1393fc987a710e3",
+      "original_harness": {
+        "revision": "dd8e3c28fbb047bcdcc5583633bb0204de2bad5c",
+        "dirty": true,
+        "source_sha256": "5cd23cb5b82f43ed0c93cf1b70e9721f657e08179536efb8891fd17de427314f"
+      },
+      "generation_process_seconds": 252.93829525,
+      "phase_profile": [
+        {
+          "component": "Qwen text encoder",
+          "phase": "total",
+          "wall_s": 5.355,
+          "encode_s": 0.003,
+          "wait_s": 3.006,
+          "root_gpu_s": 1.204,
+          "peak_GiB": 3.638,
+          "alloc_GiB": 46.865,
+          "submissions": 51,
+          "direct": 801,
+          "linear": 0,
+          "conv": 0,
+          "attention": 0
+        },
+        {
+          "component": "H3 DiT",
+          "phase": "load",
+          "wall_s": 8.707,
+          "encode_s": 0.539,
+          "wait_s": 6.948,
+          "root_gpu_s": 0.164,
+          "peak_GiB": 37.347,
+          "alloc_GiB": 63.194,
+          "submissions": 55,
+          "direct": 31,
+          "linear": 53,
+          "conv": 0,
+          "attention": 2
+        },
+        {
+          "component": "H3 DiT",
+          "phase": "GPU Euler denoise",
+          "wall_s": 205.297,
+          "encode_s": 167.986,
+          "wait_s": 37.304,
+          "root_gpu_s": 0.104,
+          "peak_GiB": 37.347,
+          "alloc_GiB": 0.0,
+          "submissions": 20,
+          "direct": 3180,
+          "linear": 4000,
+          "conv": 0,
+          "attention": 1000
+        },
+        {
+          "component": "H3 DiT",
+          "phase": "total",
+          "wall_s": 214.436,
+          "encode_s": 168.525,
+          "wait_s": 44.252,
+          "root_gpu_s": 0.268,
+          "peak_GiB": 37.347,
+          "alloc_GiB": 63.194,
+          "submissions": 75,
+          "direct": 3211,
+          "linear": 4053,
+          "conv": 0,
+          "attention": 1002
+        },
+        {
+          "component": "audio VAE decoder",
+          "phase": "total",
+          "wall_s": 2.165,
+          "encode_s": 1.878,
+          "wait_s": 0.213,
+          "root_gpu_s": 0.192,
+          "peak_GiB": 0.283,
+          "alloc_GiB": 0.815,
+          "submissions": 16,
+          "direct": 340,
+          "linear": 0,
+          "conv": 136,
+          "attention": 0
+        },
+        {
+          "component": "video VAE decoder",
+          "phase": "total",
+          "wall_s": 30.218,
+          "encode_s": 0.405,
+          "wait_s": 28.495,
+          "root_gpu_s": 0.232,
+          "peak_GiB": 9.454,
+          "alloc_GiB": 9.46,
+          "submissions": 28,
+          "direct": 6132,
+          "linear": 4060,
+          "conv": 0,
+          "attention": 1008
+        }
+      ],
+      "progress_receipt": {
+        "expected_count": 19,
+        "count": 19,
+        "raw_seconds": [
+          9.54917133300114,
+          9.571491791999506,
+          9.644054250000409,
+          9.572244999999384,
+          9.793554207999478,
+          10.031749584000863,
+          10.206312708000041,
+          10.257863167000323,
+          10.241631082999447,
+          10.314490667000427,
+          10.325721582999904,
+          10.324860667000394,
+          10.28715687499971,
+          10.238888583000517,
+          10.275926207999873,
+          10.37946324999939,
+          10.326578124999287,
+          10.298309249999875,
+          10.399452209001538
+        ],
+        "median_seconds": 10.257863167000323,
+        "omitted_ambiguous_steps": []
+      },
+      "progress_limitations": [
+        "Receipt timestamps are recorded after pipe read and local log flush; they are not producer or device timestamps.",
+        "Differences include CPU encoding, synchronization, dispatch and observer scheduling/I/O delay; delay error is not bounded.",
+        "Step 0 is excluded descriptively. Remaining steps are not proven compilation-free and are not independent repeated identical inputs.",
+        "Coalesced boundaries and intervals touching them are ambiguous, excluded from the summary; zero receipt deltas are not zero execution time.",
+        "Completed enqueue steps follow synchronization for this fixed recipe; the final latent readback/unpack follows enqueue completion and is excluded.",
+        "Profile phase totals overlap. Root-GPU counters and receipt intervals are distinct; neither provides per-operation device attribution."
+      ],
+      "raw_evidence_sha256": {
+        "run.json": "02705cc16d9835aa82738a56a47cc4848f400271b610fe9f0c430156a2cbc20c",
+        "generation.log": "7dcfd2cc8439cbf679ff9509b52dab3cae85e73d4da55752c5282eb30f02431d",
+        "generation.events.jsonl": "cba11e4f97637a16d85c12b7364c7cbea9f6101797735302b9fc0e863f09c99f"
+      },
+      "sample": {
+        "file": "bf16-seed42.mp4",
+        "sha256": "1c5c50dce1ac856b8c41cfdedb655d7aec249e3bafb83f17b16e43af1bbe34ab",
+        "bytes": 917010
+      }
+    },
+    {
+      "mode": "upstream-int8",
+      "status": "completed",
+      "started_utc": "2026-10-18T22:24:41.243210+00:00",
+      "finished_utc": "2026-10-18T22:28:36.102256+00:00",
+      "environment": {
+        "system": "Darwin",
+        "release": "27.0.0",
+        "machine": "arm64",
+        "python": "3.12.15",
+        "chip": "Apple M5 Max",
+        "memory_bytes": 137438953472,
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "xcode": "Xcode 27.1\nBuild version 27A9275",
+        "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+        "ffprobe": "ffprobe version 9.0.2 Copyright (c) 2007-2026 the FFmpeg developers"
+      },
+      "upstream": {
+        "revision": "8974cc055ea9c02fcd14cc27dfda3e1027c05153",
+        "dirty": false,
+        "status": "",
+        "source_sha256": "6e8931b5d88abfc40ea4f38c3c2c603a5b1ae93156f19b653cbfe9f26c8814b5",
+        "binary_sha256": "ab14650a798cb33f83eb274cb4b17340d7f481260df9d50013db38c9e4359393",
+        "repository": "https://github.com/antirez/h3.c"
+      },
+      "original_runner_sha256": "194f80be30280b198a2a85b7d541c040c33e30fc1b4a7c86c1393fc987a710e3",
+      "original_harness": {
+        "revision": "5882162acf0b2a6f5961c31dcd95ef07f06ad8c5",
+        "dirty": true,
+        "source_sha256": "59f7af6b6ee54ddd8e37425871ea47cab34f25a26fac91c8870cae5f8607483c"
+      },
+      "generation_process_seconds": 182.4550198750003,
+      "phase_profile": [
+        {
+          "component": "Qwen text encoder",
+          "phase": "total",
+          "wall_s": 4.761,
+          "encode_s": 0.005,
+          "wait_s": 3.181,
+          "root_gpu_s": 1.338,
+          "peak_GiB": 3.638,
+          "alloc_GiB": 46.865,
+          "submissions": 51,
+          "direct": 801,
+          "linear": 0,
+          "conv": 0,
+          "attention": 0
+        },
+        {
+          "component": "H3 DiT",
+          "phase": "load",
+          "wall_s": 19.633,
+          "encode_s": 0.048,
+          "wait_s": 17.999,
+          "root_gpu_s": 0.46,
+          "peak_GiB": 19.812,
+          "alloc_GiB": 81.549,
+          "submissions": 205,
+          "direct": 231,
+          "linear": 53,
+          "conv": 0,
+          "attention": 2
+        },
+        {
+          "component": "H3 DiT",
+          "phase": "GPU Euler denoise",
+          "wall_s": 126.556,
+          "encode_s": 0.085,
+          "wait_s": 126.464,
+          "root_gpu_s": 1.135,
+          "peak_GiB": 19.812,
+          "alloc_GiB": 0.0,
+          "submissions": 20,
+          "direct": 8200,
+          "linear": 0,
+          "conv": 0,
+          "attention": 1000
+        },
+        {
+          "component": "H3 DiT",
+          "phase": "total",
+          "wall_s": 146.447,
+          "encode_s": 0.132,
+          "wait_s": 144.464,
+          "root_gpu_s": 1.596,
+          "peak_GiB": 19.812,
+          "alloc_GiB": 81.549,
+          "submissions": 225,
+          "direct": 8431,
+          "linear": 53,
+          "conv": 0,
+          "attention": 1002
+        },
+        {
+          "component": "audio VAE decoder",
+          "phase": "total",
+          "wall_s": 0.473,
+          "encode_s": 0.231,
+          "wait_s": 0.169,
+          "root_gpu_s": 0.148,
+          "peak_GiB": 0.283,
+          "alloc_GiB": 0.815,
+          "submissions": 16,
+          "direct": 340,
+          "linear": 0,
+          "conv": 136,
+          "attention": 0
+        },
+        {
+          "component": "video VAE decoder",
+          "phase": "total",
+          "wall_s": 30.148,
+          "encode_s": 0.201,
+          "wait_s": 28.566,
+          "root_gpu_s": 0.234,
+          "peak_GiB": 9.454,
+          "alloc_GiB": 9.46,
+          "submissions": 28,
+          "direct": 6132,
+          "linear": 4060,
+          "conv": 0,
+          "attention": 1008
+        }
+      ],
+      "progress_receipt": {
+        "expected_count": 19,
+        "count": 19,
+        "raw_seconds": [
+          6.30022766699949,
+          6.355534000000262,
+          6.378740083000594,
+          6.282040582998889,
+          6.357552917001158,
+          6.326078416999735,
+          6.29744537499937,
+          6.345816832999844,
+          6.340627000001405,
+          6.310698416999003,
+          6.314344333000918,
+          6.33347133299867,
+          6.3342432500012364,
+          6.317712041998675,
+          6.322509875000833,
+          6.324248332999559,
+          6.311870249999629,
+          6.320791417001601,
+          6.336883166999542
+        ],
+        "median_seconds": 6.324248332999559,
+        "omitted_ambiguous_steps": []
+      },
+      "progress_limitations": [
+        "Receipt timestamps are recorded after pipe read and local log flush; they are not producer or device timestamps.",
+        "Differences include CPU encoding, synchronization, dispatch and observer scheduling/I/O delay; delay error is not bounded.",
+        "Step 0 is excluded descriptively. Remaining steps are not proven compilation-free and are not independent repeated identical inputs.",
+        "Coalesced boundaries and intervals touching them are ambiguous, excluded from the summary; zero receipt deltas are not zero execution time.",
+        "Completed enqueue steps follow synchronization for this fixed recipe; the final latent readback/unpack follows enqueue completion and is excluded.",
+        "Profile phase totals overlap. Root-GPU counters and receipt intervals are distinct; neither provides per-operation device attribution."
+      ],
+      "raw_evidence_sha256": {
+        "run.json": "04868005098f9474b8f82bdeecd8a8b43dc2ef2f8681d2cd4ebdbdf0f50505ad",
+        "generation.log": "364e3271ed357a37d9b52882bd1a89c4a975548f2ff6489e6c739d2c3d8bdac2",
+        "generation.events.jsonl": "4d37658ecacf4f64e313c5403a774f4267eb42930eccd886a905d4982330832b"
+      },
+      "sample": {
+        "file": "int8-seed42.mp4",
+        "sha256": "993e73621f4028c9759058457f0f41ee2a06dd865bf8691de28f06baddcc3020",
+        "bytes": 919288
+      }
+    }
+  ],
+  "evaluation": {
+    "status": "completed",
+    "scope": "paired output drift; BF16 reference is not perceptual ground truth",
+    "quality_decision": "not_evaluated",
+    "environment": {
+      "python": "3.12.15",
+      "numpy": "2.4.4",
+      "platform": "macOS-27.0.1-arm64-arm-64bit",
+      "ffmpeg": {
+        "version": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+        "binary_sha256": "7f6028378534aa10a2dfa07d807ddcc0d18c869bf5c2f64c89efcc18ee88c4ee"
+      },
+      "ffprobe": {
+        "version": "ffprobe version 9.0.2 Copyright (c) 2007-2026 the FFmpeg developers",
+        "binary_sha256": "bfe676bfc3a889bebe63af07c71a926a6167f568c7a932a79c2f1fe51ae6d5a1"
+      }
+    },
+    "harness_sha256": "e54704bba58a6c85bf2bddd6825f7ecbb39b4a50440f6a350708fdd3e5e62f8a",
+    "video_rgb": {
+      "status": "completed",
+      "shape": [
+        120,
+        512,
+        512,
+        3
+      ],
+      "elements": 94371840,
+      "reference_dtype": "uint8",
+      "candidate_dtype": "uint8",
+      "data_range": 255.0,
+      "accumulation_dtype": "float64",
+      "reference_nonfinite": 0,
+      "candidate_nonfinite": 0,
+      "exactly_equal": false,
+      "reference_min_max": [
+        0.0,
+        242.0
+      ],
+      "candidate_min_max": [
+        0.0,
+        245.0
+      ],
+      "metrics": {
+        "maximum_absolute_error": {
+          "status": "finite",
+          "value": 233.0
+        },
+        "rmse": {
+          "status": "finite",
+          "value": 29.85854323172564
+        },
+        "psnr_db": {
+          "status": "finite",
+          "value": 18.629431306375384
+        },
+        "snr_db": {
+          "status": "finite",
+          "value": 12.712753111817646
+        },
+        "relative_l2": {
+          "status": "finite",
+          "value": 0.23139946174416637
+        }
+      }
+    },
+    "audio_pcm32k_stereo": {
+      "status": "completed",
+      "shape": [
+        160000,
+        2
+      ],
+      "elements": 320000,
+      "reference_dtype": "float32",
+      "candidate_dtype": "float32",
+      "data_range": 2.0,
+      "accumulation_dtype": "float64",
+      "reference_nonfinite": 0,
+      "candidate_nonfinite": 0,
+      "exactly_equal": false,
+      "reference_min_max": [
+        -0.029800614342093468,
+        0.03378213942050934
+      ],
+      "candidate_min_max": [
+        -0.038668204098939896,
+        0.038408342748880386
+      ],
+      "metrics": {
+        "maximum_absolute_error": {
+          "status": "finite",
+          "value": 0.02031792886555195
+        },
+        "rmse": {
+          "status": "finite",
+          "value": 0.0017109149133410512
+        },
+        "psnr_db": {
+          "status": "finite",
+          "value": 61.3560316755296
+        },
+        "snr_db": {
+          "status": "finite",
+          "value": 13.961845655488649
+        },
+        "relative_l2": {
+          "status": "finite",
+          "value": 0.20040461444766106
+        }
+      }
+    },
+    "audio_channels": {
+      "left": {
+        "status": "completed",
+        "shape": [
+          160000
+        ],
+        "elements": 160000,
+        "reference_dtype": "float32",
+        "candidate_dtype": "float32",
+        "data_range": 2.0,
+        "accumulation_dtype": "float64",
+        "reference_nonfinite": 0,
+        "candidate_nonfinite": 0,
+        "exactly_equal": false,
+        "reference_min_max": [
+          -0.029403800144791603,
+          0.03378213942050934
+        ],
+        "candidate_min_max": [
+          -0.038668204098939896,
+          0.038408342748880386
+        ],
+        "metrics": {
+          "maximum_absolute_error": {
+            "status": "finite",
+            "value": 0.02031792886555195
+          },
+          "rmse": {
+            "status": "finite",
+            "value": 0.0016618913275032424
+          },
+          "psnr_db": {
+            "status": "finite",
+            "value": 61.60854748350829
+          },
+          "snr_db": {
+            "status": "finite",
+            "value": 13.98764379047078
+          },
+          "relative_l2": {
+            "status": "finite",
+            "value": 0.19981027175530358
+          }
+        }
+      },
+      "right": {
+        "status": "completed",
+        "shape": [
+          160000
+        ],
+        "elements": 160000,
+        "reference_dtype": "float32",
+        "candidate_dtype": "float32",
+        "data_range": 2.0,
+        "accumulation_dtype": "float64",
+        "reference_nonfinite": 0,
+        "candidate_nonfinite": 0,
+        "exactly_equal": false,
+        "reference_min_max": [
+          -0.029800614342093468,
+          0.027847614139318466
+        ],
+        "candidate_min_max": [
+          -0.03314629942178726,
+          0.03243986517190933
+        ],
+        "metrics": {
+          "maximum_absolute_error": {
+            "status": "finite",
+            "value": 0.009056120878085494
+          },
+          "rmse": {
+            "status": "finite",
+            "value": 0.0017585724031029123
+          },
+          "psnr_db": {
+            "status": "finite",
+            "value": 61.117394841559545
+          },
+          "snr_db": {
+            "status": "finite",
+            "value": 13.93867589390805
+          },
+          "relative_l2": {
+            "status": "finite",
+            "value": 0.20093991087882201
+          }
+        }
+      }
+    },
+    "optional": {
+      "lpips": {
+        "status": "not_measured",
+        "reason": "LPIPS adapter/checkpoint is not configured; no download or substitute metric"
+      },
+      "vbench": {
+        "status": "not_measured",
+        "reason": "VBench adapter/checkpoint is not configured; no download or substitute metric"
+      },
+      "fvd": {
+        "status": "not_measured",
+        "reason": "requires video collections; one paired clip is insufficient"
+      },
+      "ssim": {
+        "status": "completed",
+        "backend": "ffmpeg ssim, planar RGB gbrp",
+        "mean": {
+          "status": "finite",
+          "value": 0.6905005666666667
+        },
+        "per_frame": [
+          0.613572,
+          0.616149,
+          0.61053,
+          0.621304,
+          0.614693,
+          0.611614,
+          0.602761,
+          0.612096,
+          0.605769,
+          0.616697,
+          0.615065,
+          0.629439,
+          0.629814,
+          0.639788,
+          0.639369,
+          0.649599,
+          0.647544,
+          0.66503,
+          0.65893,
+          0.668837,
+          0.664261,
+          0.67183,
+          0.670965,
+          0.682979,
+          0.683153,
+          0.692843,
+          0.69317,
+          0.699272,
+          0.692689,
+          0.701966,
+          0.703597,
+          0.713303,
+          0.708753,
+          0.719227,
+          0.713718,
+          0.718135,
+          0.711326,
+          0.714285,
+          0.706041,
+          0.705836,
+          0.704765,
+          0.713718,
+          0.712584,
+          0.719605,
+          0.717539,
+          0.726737,
+          0.727809,
+          0.733632,
+          0.737431,
+          0.749039,
+          0.746169,
+          0.748719,
+          0.738295,
+          0.744136,
+          0.738762,
+          0.74441,
+          0.735115,
+          0.739477,
+          0.731589,
+          0.732233,
+          0.71173,
+          0.712903,
+          0.698882,
+          0.703008,
+          0.696989,
+          0.70377,
+          0.695752,
+          0.700573,
+          0.697072,
+          0.710826,
+          0.708037,
+          0.717829,
+          0.70657,
+          0.708109,
+          0.705027,
+          0.715676,
+          0.722192,
+          0.725917,
+          0.723771,
+          0.740309,
+          0.741646,
+          0.737969,
+          0.731769,
+          0.73521,
+          0.728024,
+          0.735509,
+          0.731807,
+          0.736784,
+          0.738905,
+          0.741931,
+          0.728481,
+          0.724629,
+          0.716731,
+          0.719524,
+          0.702522,
+          0.697081,
+          0.692442,
+          0.704012,
+          0.694043,
+          0.684783,
+          0.673331,
+          0.682599,
+          0.672278,
+          0.663913,
+          0.655401,
+          0.658262,
+          0.659117,
+          0.6534,
+          0.646534,
+          0.647833,
+          0.652328,
+          0.651117,
+          0.643164,
+          0.646021,
+          0.646028,
+          0.646847,
+          0.645687,
+          0.646719,
+          0.636439,
+          0.626593
+        ],
+        "note": "FFmpeg SSIM implementation; not interchangeable with other SSIM variants"
+      }
+    },
+    "raw_evaluation_sha256": "9bd829c8208b422ddaaa0ad567546b02cfc6019ba3c314fd7fd9a58402290b26",
+    "alignment": {
+      "width": 512,
+      "height": 512,
+      "fps": "24",
+      "frames": 120,
+      "audio_frame_samples": [
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        256
+      ],
+      "decoded_audio_samples": 160000,
+      "duration_seconds": "5",
+      "audio_rate": 32000,
+      "audio_channels": 2,
+      "color_metadata": {
+        "pix_fmt": "yuv420p",
+        "color_range": null,
+        "color_space": null,
+        "color_transfer": null,
+        "color_primaries": null,
+        "chroma_location": "left",
+        "sample_aspect_ratio": null
+      },
+      "video_frame_color_metadata": [
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        },
+        {
+          "pix_fmt": "yuv420p",
+          "color_range": null,
+          "color_space": null,
+          "color_transfer": null,
+          "color_primaries": null,
+          "chroma_location": "left",
+          "sample_aspect_ratio": null
+        }
+      ],
+      "pts_contract": "All probed frame/sample counts and PTS arrays match; strict evaluator rejects resampling, truncation and alignment changes."
+    },
+    "self_comparison": {
+      "status": "completed",
+      "quality_decision": "not_evaluated",
+      "video_rgb": {
+        "status": "completed",
+        "shape": [
+          120,
+          512,
+          512,
+          3
+        ],
+        "elements": 94371840,
+        "reference_dtype": "uint8",
+        "candidate_dtype": "uint8",
+        "data_range": 255.0,
+        "accumulation_dtype": "float64",
+        "reference_nonfinite": 0,
+        "candidate_nonfinite": 0,
+        "exactly_equal": true,
+        "reference_min_max": [
+          0.0,
+          242.0
+        ],
+        "candidate_min_max": [
+          0.0,
+          242.0
+        ],
+        "metrics": {
+          "maximum_absolute_error": {
+            "status": "finite",
+            "value": 0.0
+          },
+          "rmse": {
+            "status": "finite",
+            "value": 0.0
+          },
+          "psnr_db": {
+            "status": "positive_infinity",
+            "value": null,
+            "reason": "zero error"
+          },
+          "snr_db": {
+            "status": "positive_infinity",
+            "value": null,
+            "reason": "zero error"
+          },
+          "relative_l2": {
+            "status": "finite",
+            "value": 0.0
+          }
+        }
+      },
+      "audio_pcm32k_stereo": {
+        "status": "completed",
+        "shape": [
+          160000,
+          2
+        ],
+        "elements": 320000,
+        "reference_dtype": "float32",
+        "candidate_dtype": "float32",
+        "data_range": 2.0,
+        "accumulation_dtype": "float64",
+        "reference_nonfinite": 0,
+        "candidate_nonfinite": 0,
+        "exactly_equal": true,
+        "reference_min_max": [
+          -0.029800614342093468,
+          0.03378213942050934
+        ],
+        "candidate_min_max": [
+          -0.029800614342093468,
+          0.03378213942050934
+        ],
+        "metrics": {
+          "maximum_absolute_error": {
+            "status": "finite",
+            "value": 0.0
+          },
+          "rmse": {
+            "status": "finite",
+            "value": 0.0
+          },
+          "psnr_db": {
+            "status": "positive_infinity",
+            "value": null,
+            "reason": "zero error"
+          },
+          "snr_db": {
+            "status": "positive_infinity",
+            "value": null,
+            "reason": "zero error"
+          },
+          "relative_l2": {
+            "status": "finite",
+            "value": 0.0
+          }
+        }
+      },
+      "ssim": {
+        "status": "finite",
+        "value": 1.0
+      },
+      "raw_evaluation_sha256": "1a79265c97cbfe71fdad4b471eff4dbfde28ee9ed206d0acd483dda737dc9994"
+    }
+  },
+  "experimental_candidates": {
+    "hadamard_int8": "not measured",
+    "fp8": "not measured",
+    "bf16_row_splitting": "not measured",
+    "vae_tile_tuning": "not measured"
+  }
+}

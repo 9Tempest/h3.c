@@ -28,3 +28,11 @@ h3_real_video_vae_test
 h3_semantic_vae_test
 libh3.a
 .DS_Store
+
+# Local performance tooling and immutable local evidence
+.cache/
+.build/
+.venv/
+results/local/
+__pycache__/
+.pytest_cache/

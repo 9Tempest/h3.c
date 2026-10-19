@@ -1,0 +1,43 @@
+{
+  "schema": "h3_kernel_integration_fork_links_v1",
+  "scope": "Pointers to immutable primary-repository evidence; no new experiment or metric recomputation.",
+  "primary_repository": "https://github.com/9Tempest/m5-max-kernels",
+  "primary_revision": "f4583dbc6a5a106216a9764ff4bd9f6be030863c",
+  "primary_pull_request": "https://github.com/9Tempest/m5-max-kernels/pull/8",
+  "upstream_revision": "8974cc055ea9c02fcd14cc27dfda3e1027c05153",
+  "source_pin_sha256": "0836659da9c9ea35fd6ab9956cfbc88d0fd2063866848487d40a6885f87e89d5",
+  "decision": "keep_experimental",
+  "new_flags_default": 0,
+  "evidence": [
+    {
+      "file": "manifest.json",
+      "sha256": "8f9b3fbe2122373279da00fafe37da813754dc75d9dd372073933feb6ed7fc49",
+      "url": "https://github.com/9Tempest/m5-max-kernels/blob/f4583dbc6a5a106216a9764ff4bd9f6be030863c/results/published/h3-native-eval/kernel-integration-v1/manifest.json"
+    },
+    {
+      "file": "raw/resident/kernel-resident-baseline-combined-001.json",
+      "sha256": "395fea7962ca5cdd1fcb7f8e9d701eef4f0c7494bbe7690392b0aa9d240f260a",
+      "url": "https://github.com/9Tempest/m5-max-kernels/blob/f4583dbc6a5a106216a9764ff4bd9f6be030863c/results/published/h3-native-eval/kernel-integration-v1/raw/resident/kernel-resident-baseline-combined-001.json"
+    },
+    {
+      "file": "raw/decisions/kernel-default-combined-001.json",
+      "sha256": "15dcf396256e841af64f8c032534f3280537cc02ccb0d83bd6072770d1d1b089",
+      "url": "https://github.com/9Tempest/m5-max-kernels/blob/f4583dbc6a5a106216a9764ff4bd9f6be030863c/results/published/h3-native-eval/kernel-integration-v1/raw/decisions/kernel-default-combined-001.json"
+    },
+    {
+      "file": "raw/evaluations/kernel-all-policies-eval-seed42-001/kernel-evaluation.json",
+      "sha256": "db361a4c23e134063993ba98b135bd7956f9087c608c8b976ad81016fb559fb5",
+      "url": "https://github.com/9Tempest/m5-max-kernels/blob/f4583dbc6a5a106216a9764ff4bd9f6be030863c/results/published/h3-native-eval/kernel-integration-v1/raw/evaluations/kernel-all-policies-eval-seed42-001/kernel-evaluation.json"
+    },
+    {
+      "file": "raw/evaluations/kernel-all-policies-eval-seed43-001/kernel-evaluation.json",
+      "sha256": "6c68c6cfc1503b7ac34886bb4e77808d888785494eccaa8614a391f41c270a3b",
+      "url": "https://github.com/9Tempest/m5-max-kernels/blob/f4583dbc6a5a106216a9764ff4bd9f6be030863c/results/published/h3-native-eval/kernel-integration-v1/raw/evaluations/kernel-all-policies-eval-seed43-001/kernel-evaluation.json"
+    },
+    {
+      "file": "results.md",
+      "sha256": "0ca05e261294dd669fe58ca8d1486f0fdba0b6225edb6d8451141765c0471a98",
+      "url": "https://github.com/9Tempest/m5-max-kernels/blob/f4583dbc6a5a106216a9764ff4bd9f6be030863c/results/published/h3-native-eval/kernel-integration-v1/results.md"
+    }
+  ]
+}

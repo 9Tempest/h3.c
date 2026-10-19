@@ -1,5 +1,8 @@
 # Native H256, prepared loading and gate epilogue evidence
 
+The later [QKV/AdaLN-H256 integration study](kernel-integration.md) reports
+the new actual-runtime candidate and its negative adoption result separately.
+
 This follow-up keeps the [original one-shot BF16/INT8 observation](README.md)
 unchanged. Numerical captures, prepared-checkpoint replay, resident requests
 and operator timing are separate experiments. Their elapsed times must not be

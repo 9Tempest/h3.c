@@ -1,14 +1,14 @@
 /* Original host-only cache experiment for the pinned h3.c public API.
  * Build from repository root (no GPU execution during compilation):
- * clang -std=c11 -O2 -Wall -Wextra -Werror -D_DARWIN_C_SOURCE -I.cache/h3-baseline \
- *   tools/perf/session.c .cache/h3-baseline/libh3.a -framework Foundation \
+ * clang -std=c11 -O2 -Wall -Wextra -Werror -D_DARWIN_C_SOURCE -I.cache/h3.c \
+ *   integrations/h3/session.c .cache/h3.c/libh3.a -framework Foundation \
  *   -framework Metal -framework MetalPerformanceShaders \
  *   -framework MetalPerformanceShadersGraph -framework Accelerate -licucore -lm \
  *   -o .build/h3-session
- * Run from .cache/h3-baseline, where the original h3_shaders.metal is located:
+ * Run from .cache/h3.c, where the original h3_shaders.metal is located:
  * ../../.build/h3-session MODE MODEL_DIR NEW_OUTPUT_DIR [WIDTH HEIGHT STEPS SEED]
  * MODE is bf16 or upstream-int8. Defaults: 512 512 20 42. 124 source frames.
- * The driver holds the same flock file used by locking.gpu_lock.
+ * The driver holds the same flock file used by m5kernels.locking.gpu_lock.
  * Records are exclusive. One warmup precedes three same-seed timed generations.
  * Audio VAE creates h3_gpu and loads stage weights on EVERY generation; these
  * are cached deployment latencies, not compilation-free kernel measurements.
@@ -66,6 +66,7 @@ static int exclusive_log(const char *directory, const char *name) {
 }
 
 /* Python tempfile.gettempdir() checks these variables in this order. */
+#ifndef H3_SESSION_EXPERIMENT
 static int lock_gpu(void) {
     const char *keys[] = {"TMPDIR", "TEMP", "TMP"};
     const char *directory = NULL;
@@ -87,6 +88,7 @@ static int lock_gpu(void) {
     if (fd >= 0) close(fd);
     return -1;
 }
+#endif
 
 typedef struct {
     double start;
@@ -95,6 +97,12 @@ typedef struct {
     int read_fd;
     int fallback;
     char tail[64];
+#ifdef H3_SESSION_EXPERIMENT
+    char denoise_start_phase[32];
+    int denoise_total;
+    int denoise_completed;
+    int denoise_completion_events;
+#endif
 } progress_state;
 
 static int detect_fallback(progress_state *state) {
@@ -118,10 +126,20 @@ static int detect_fallback(progress_state *state) {
 static int progress(const char *phase, int completed, int total, void *opaque) {
     progress_state *state = opaque;
     double timestamp = now();
-    if (!strncmp(phase, "denoise", 7) && completed == 0 && state->denoise_start < 0)
+    if (!strncmp(phase, "denoise", 7) && completed == 0 && state->denoise_start < 0) {
         state->denoise_start = timestamp;
-    if (!strcmp(phase, "denoise") && completed == total)
+#ifdef H3_SESSION_EXPERIMENT
+        snprintf(state->denoise_start_phase, sizeof(state->denoise_start_phase), "%s", phase);
+        state->denoise_total = total;
+#endif
+    }
+    if (!strcmp(phase, "denoise") && completed == total) {
         state->denoise_end = timestamp;
+#ifdef H3_SESSION_EXPERIMENT
+        state->denoise_completed = completed;
+        state->denoise_completion_events++;
+#endif
+    }
     fprintf(stderr, "session progress: elapsed=%.6fs phase=%s completed=%d total=%d\n",
             timestamp - state->start, phase, completed, total);
     return detect_fallback(state);
@@ -139,12 +157,27 @@ static uint64_t integer(const char *text, uint64_t min, uint64_t max) {
 }
 
 int main(int argc, char **argv) {
+#ifdef H3_SESSION_EXPERIMENT
+    /* The experimental Python wrapper owns the GPU lock through preflight,
+     * rebuild, execution and validation. Compile this entry only through it. */
+    if (argc != 9 || (strcmp(argv[1], "bf16") &&
+        strcmp(argv[1], "upstream-int8") && strcmp(argv[1], "hadamard-fc2"))) {
+        fprintf(stderr, "Usage: %s MODE MODEL_DIR NEW_OUTPUT_DIR WIDTH HEIGHT STEPS SEED "
+                "none|fc2|attention|both\n", argv[0]);
+        return 2;
+    }
+    const char *fusion = argv[8];
+    if (strcmp(fusion, "none") && strcmp(fusion, "fc2") &&
+        strcmp(fusion, "attention") && strcmp(fusion, "both")) return 2;
+    if (strcmp(fusion, "none") && strcmp(argv[1], "hadamard-fc2")) return 2;
+#else
     if ((argc != 4 && argc != 8) ||
         (strcmp(argv[1], "bf16") && strcmp(argv[1], "upstream-int8"))) {
         fprintf(stderr, "Usage: %s bf16|upstream-int8 MODEL_DIR NEW_OUTPUT_DIR "
                 "[WIDTH HEIGHT STEPS SEED]\n", argv[0]);
         return 2;
     }
+#endif
     for (char **entry = environ; *entry; ++entry) {
         if (!strncmp(*entry, "H3_", 3)) {
             fprintf(stderr, "Unset inherited H3_* overrides before this fixed experiment\n");
@@ -152,10 +185,10 @@ int main(int argc, char **argv) {
         }
     }
     h3_params params = H3_PARAMS_DEFAULT;
-    params.width = argc == 8 ? (int)integer(argv[4], 256, 4096) : 512;
-    params.height = argc == 8 ? (int)integer(argv[5], 256, 4096) : 512;
-    params.steps = argc == 8 ? (int)integer(argv[6], 2, 1000) : 20;
-    params.seed = argc == 8 ? integer(argv[7], 0, UINT64_MAX) : 42;
+    params.width = argc >= 8 ? (int)integer(argv[4], 256, 4096) : 512;
+    params.height = argc >= 8 ? (int)integer(argv[5], 256, 4096) : 512;
+    params.steps = argc >= 8 ? (int)integer(argv[6], 2, 1000) : 20;
+    params.seed = argc >= 8 ? integer(argv[7], 0, UINT64_MAX) : 42;
     if (params.width % 32 || params.height % 32) {
         fprintf(stderr, "Dimensions must be multiples of 32\n");
         return 2;
@@ -179,6 +212,9 @@ int main(int argc, char **argv) {
             "\"warmups\":1,\"repetitions\":3,\"prompt\":", argv[1], params.width,
             params.height, params.steps, params.seed);
     json_string(records, prompt);
+#ifdef H3_SESSION_EXPERIMENT
+    fprintf(records, ",\"fusion\":\"%s\"", fusion);
+#endif
     fprintf(records, ",\"upstream_revision\":\"8974cc055ea9c02fcd14cc27dfda3e1027c05153\","
             "\"model_revision\":\"42ed227ee7df40d41602854ae760620d6eb651fe\","
             "\"timing_scope\":\"h3_generate including AV export; audio VAE shader "
@@ -188,12 +224,27 @@ int main(int argc, char **argv) {
             "\"denoise_callback_scope\":\"first denoise enqueue after input packing/copy "
             "through synchronized GPU completion and latent unpack; excludes initial input "
             "packing/copy, includes final latent copy/unpack\"}\n");
+#ifndef H3_SESSION_EXPERIMENT
     int lock = lock_gpu();
     if (lock < 0) {
         fprintf(records, "{\"event\":\"failure\",\"error\":\"GPU lock unavailable\"}\n");
         fclose(records);
         return 1;
     }
+#else
+    setenv("H3_HADAMARD_FC2", !strcmp(argv[1], "hadamard-fc2") ? "1" : "0", 1);
+    if (strcmp(fusion, "none")) {
+        setenv("H3_FUSE_FC2_GATE",
+               !strcmp(fusion, "fc2") || !strcmp(fusion, "both") ? "1" : "0", 1);
+        setenv("H3_FUSE_ATTN_OUT_GATE",
+               !strcmp(fusion, "attention") || !strcmp(fusion, "both") ? "1" : "0", 1);
+    }
+    fprintf(records, "{\"event\":\"runtime_flags\",\"H3_HADAMARD_FC2\":\"%s\","
+            "\"H3_FUSE_FC2_GATE\":\"%s\",\"H3_FUSE_ATTN_OUT_GATE\":\"%s\"}\n",
+            getenv("H3_HADAMARD_FC2"),
+            getenv("H3_FUSE_FC2_GATE") ? getenv("H3_FUSE_FC2_GATE") : "unset",
+            getenv("H3_FUSE_ATTN_OUT_GATE") ? getenv("H3_FUSE_ATTN_OUT_GATE") : "unset");
+#endif
     setenv("H3_PROFILE", "1", 1);
     setenv("H3_NAX", "qkv-attn", 1);
     setenv("H3_NAX_DIAGNOSTIC", "1", 1);
@@ -252,6 +303,9 @@ int main(int argc, char **argv) {
         h3_cache_get_info(ctx, &after);
         int valid = result && !state.fallback && result->width == params.width &&
                     result->height == params.height && result->frames == 124 && result->fps == 24;
+#ifdef H3_SESSION_EXPERIMENT
+        valid = valid && result->seed == params.seed;
+#endif
         fprintf(records, "{\"event\":\"generation\",\"index\":%d,\"warmup\":%s,"
                 "\"started_unix_seconds\":%lld,\"wall_seconds\":%.9f,"
                 "\"status\":\"%s\",\"output\":\"%s.mp4\","
@@ -265,6 +319,21 @@ int main(int argc, char **argv) {
         if (state.denoise_start >= 0 && state.denoise_end >= state.denoise_start)
             fprintf(records, "%.9f", state.denoise_end - state.denoise_start);
         else fprintf(records, "null");
+#ifdef H3_SESSION_EXPERIMENT
+        fprintf(records, ",\"requested_seed\":%" PRIu64 ",\"result_seed\":", params.seed);
+        if (result) fprintf(records, "%" PRIu64, result->seed); else fprintf(records, "null");
+        fprintf(records, ",\"denoise_start_phase\":");
+        json_string(records, state.denoise_start_phase);
+        fprintf(records, ",\"denoise_end_phase\":\"denoise\",\"denoise_total\":%d,"
+                "\"denoise_completed\":%d,\"denoise_completion_events\":%d,"
+                "\"denoise_start_offset_seconds\":", state.denoise_total,
+                state.denoise_completed, state.denoise_completion_events);
+        if (state.denoise_start >= 0) fprintf(records, "%.9f", state.denoise_start - state.start);
+        else fprintf(records, "null");
+        fprintf(records, ",\"denoise_end_offset_seconds\":");
+        if (state.denoise_end >= 0) fprintf(records, "%.9f", state.denoise_end - state.start);
+        else fprintf(records, "null");
+#endif
         if (!valid) {
             fprintf(records, ",\"error\":");
             json_string(records, state.fallback ? "TensorOps compile fallback rejected" :
@@ -293,7 +362,9 @@ done:
     h3_free(ctx);
     fprintf(records, "{\"event\":\"finished\",\"exit_code\":%d}\n", status);
     fclose(records);
+#ifndef H3_SESSION_EXPERIMENT
     flock(lock, LOCK_UN);
     close(lock);
+#endif
     return status;
 }

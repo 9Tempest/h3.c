@@ -7,6 +7,14 @@ was in DiT denoising: **126.556 versus 205.297 seconds**. Video VAE decoding sta
 near **30 seconds**. These are one process per mode, one seed, and a fixed run
 order; they do not establish a stable speedup or a quality acceptance decision.
 
+The [follow-up evidence](followup.md) adds real FC2 activation comparisons,
+actual packed geometry and a partial Metal trace. It preserves the initial
+paired process measurement and treats diagnostic captures separately.
+The [native experiment report](native-experiments.md) organizes the later
+two-seed latent/media results, prepared-checkpoint replay, resident timings and
+two gate-epilogue campaigns, three additional scenes and the matched resident
+attention-fusion result. Its single-seed timing ratios remain descriptive.
+
 This fork adds an independently usable [performance and evaluation harness](../../../tools/perf/README.md).
 The measured runtime was the clean, unmodified
 [antirez/h3.c commit 8974cc0](https://github.com/antirez/h3.c/tree/8974cc055ea9c02fcd14cc27dfda3e1027c05153).
@@ -165,6 +173,8 @@ including online activation packing. That experiment uses synthetic operands
 and does not measure this denoiser, but it is a reason to retain native QKV at
 these shapes. Earlier single-Q/K fusion gains against a different staged
 baseline cannot be treated as gains available over upstream's existing fusion.
+PR #6 was subsequently closed unmerged; the slower candidate is not included
+as a backend in this H3 fork.
 
 First obtain device attribution before prioritizing QKV versus SDPA versus MLP.
 Metal System Trace can reveal queue/CPU/GPU gaps, but unlabeled command intervals
@@ -178,8 +188,10 @@ separate and validate same-seed output parity before interpreting them.
 Hadamard INT8 full-model quality/speed, FP8, explicit BF16 splitting, VAE tile
 tuning and cached-session acceleration are **not measured in this report**.
 An [opt-in native FC2 experiment](../../../tools/perf/experimental-hadamard.md)
-includes separate synthetic correctness evidence; that does not promote a
-synthetic kernel gain into whole-model speed or quality.
+includes synthetic correctness and [real-activation follow-up evidence](followup.md).
+Neither isolated projection evidence promotes a gain into whole-model speed
+or quality. The original paired [summary](sanitized_summary.json) is retained
+as its initial evidence snapshot; new measurements have separate summaries.
 
 ## Reproduce and extend
 

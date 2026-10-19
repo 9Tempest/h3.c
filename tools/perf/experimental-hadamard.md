@@ -1,6 +1,6 @@
 # Native H3 FC2 Hadamard experiment
 
-The optional native implementation rotates **FC2 only**, after SwiGLU. It does not implement a fully Hadamard-rotated H3 model. The original checkpoint remains the numerical reference and is retained locally. No checkpoint replacement is authorized by the results below.
+The optional native implementation rotates **FC2 only**, after SwiGLU. It does not implement a fully Hadamard-rotated H3 model. All nine real-activation samples show aggregate numerical improvement over native group1024, with one of 144 sampled rows worse. The user subsequently accepted evaluating these aggregate benefits together with tail risk, full-model output and another seed; that row is recorded rather than used as an automatic veto. The original checkpoint remains available during validation. Ultimately, removing redundant original FC2 weights requires a complete, verified derived checkpoint that loads independently.
 
 Upstream is [`antirez/h3.c` at `8974cc055ea9c02fcd14cc27dfda3e1027c05153`](https://github.com/antirez/h3.c/tree/8974cc055ea9c02fcd14cc27dfda3e1027c05153). Model files are [`MiniMaxAI/MiniMax-H3` at `42ed227ee7df40d41602854ae760620d6eb651fe`](https://huggingface.co/MiniMaxAI/MiniMax-H3/tree/42ed227ee7df40d41602854ae760620d6eb651fe). The runtime's MIT license and model's separate license still apply; the repository does not distribute weights.
 
@@ -42,6 +42,7 @@ Use a new path if the checkout already exists. The standalone runner validates t
 Build the independent projection readback driver:
 
 ```sh
+mkdir -p .build
 clang -O2 -std=c11 -D_DARWIN_C_SOURCE -Wall -Wextra -Werror \
   -I .cache/h3-hadamard tools/perf/fc2_validate.c \
   .cache/h3-hadamard/libh3.a -framework Foundation -framework Metal \
@@ -102,10 +103,45 @@ It independently checks normalized H256 dot preservation, maximum-absolute-value
 
 ## Promotion gate and evidence
 
-Before looking at real-activation results, the numerical gate is fixed: for **every** sampled step×block, H256 must strictly improve aggregate relative L2, RMSE, and maximum absolute error against native group1024, with no sampled-row L2 regression. All implementation/packing checks must pass. Per-cell worse counts remain visible; an average improvement cannot conceal a deteriorating layer. No tolerance is loosened after seeing results.
+The original predeclared policy required every sampled step×block to improve aggregate relative L2, RMSE and maximum absolute error, with no sampled-row L2 regression. The immutable reports retain that historical gate and its failure. After reviewing the results, the user explicitly relaxed the decision policy: aggregate numerical benefit may justify adoption when tail/per-row risk, final latent/media quality and an independent seed are considered together. A single sampled-row regression is no longer an automatic veto. Implementation tolerances remain unchanged; this is a user-approved adoption-policy change, not an altered correctness threshold.
 
-Projection sampling is necessary but insufficient. Promotion additionally requires independent seeds, same-seed complete denoiser trajectories and final video/audio latents against BF16, and no visual/audio quality regression. Final comparisons use exported FP32 latents rather than MP4 pixels to avoid conflating model error with VAE/media encoding. Until all criteria pass, retain the original checkpoint. The analyzer always reports `checkpoint_replacement_eligible=false`; no script deletes or replaces weights.
+Projection sampling is necessary but insufficient. The remaining evaluation includes independent seeds, same-seed denoiser trajectories and final video/audio latents against BF16, and visual/audio quality. Final numerical comparisons use exported FP32 latents rather than MP4 pixels to avoid conflating model error with VAE/media encoding. The analyzer always reports `checkpoint_replacement_eligible=false` because its scope is only projection sampling; no analysis or campaign script deletes weights. Original weights remain available while the derived loader and model validation are incomplete.
 
-The first GPU correctness campaign passed all three policies on actual block-0 FC2 weights with synthetic BF16 inputs: seeds 17/29, M=129/257, explicit zero rows, outliers, and nonzero final logical rows. [Sanitized synthetic correctness evidence](../../docs/performance/m5-max-512-5s/fc2-synthetic-summary.json). Implementation relative L2 was about 0.0016–0.0017, within the unchanged BF16-output gate. H256 total error was 1.35% for each seed, versus native group1024's 1.75% and 1.86%. These are synthetic distribution checks and do **not** satisfy the real-activation or model-quality promotion gate. Real trajectory/capture analysis is recorded separately as it completes.
+The first GPU correctness campaign passed all three policies on actual block-0 FC2 weights with synthetic BF16 inputs: seeds 17/29, M=129/257, explicit zero rows, outliers, and nonzero final logical rows. [Sanitized synthetic campaign](../../docs/performance/m5-max-512-5s/fc2-synthetic-summary.json). Implementation relative L2 was about 0.0016–0.0017, within the unchanged BF16-output gate. H256 total error was 1.35% for each seed, versus native group1024's 1.75% and 1.86%. These are synthetic distribution checks.
 
-Host C compilation, offline Metal 4 shader compilation, and 13 CPU reference/runner tests passed before the generation capture. Source compilation alone was not counted as GPU correctness.
+The [seed42 native capture](../../docs/performance/m5-max-512-5s/native-diagnostics-summary.json) completed with all 20 Euler states and nine activation samples. Its five-second MP4 was byte-identical to the original native INT8 run (`993e73621f4028c9759058457f0f41ee2a06dd865bf8691de28f06baddcc3020`), supporting that the default-off instrumentation preserved that request's output. It does not establish a timing equivalence.
+
+The [real-activation calibration campaign](../../docs/performance/m5-max-512-5s/fc2-real-summary.json) evaluates each frozen sample with identical X/W. All three policies passed packing/implementation checks. Each of nine samples contains 16 real rows and 32 selected output columns, with full K=14336. The projection driver uses logical M=129, filling the remaining rows with zeros and padding to 256; this numerical experiment is **not** a 9914-row projection performance measurement.
+
+| Euler step | DiT block | Native group1024 total relL2 | H256-row total relL2 |
+|---|---:|---:|---:|
+| 0 | 0 | 1.6364% | 1.3874% |
+| 0 | 24 | 2.7985% | 1.1384% |
+| 0 | 49 | 1.7331% | 0.7984% |
+| 10 | 0 | 1.7523% | 1.3658% |
+| 10 | 24 | 2.8230% | 1.3132% |
+| 10 | 49 | 2.3042% | 0.7780% |
+| 19 | 0 | 1.8729% | 1.1293% |
+| 19 | 24 | 2.6001% | 1.2423% |
+| 19 | 49 | 1.7438% | 0.6201% |
+
+All nine aggregate relative-L2/RMSE/max-absolute metrics improve. Across their 144 input rows, 143 row L2 errors improve and one worsens. An independent CPU recomputation from the immutable BF16 operands and GPU outputs identifies that row as **step19/block49, sample index14, packed row7434**, within video segment `[442,9914)`. It is local video row6992, or zero-based temporal index27 and spatial patch `(y=5,x=0)` on the 37×16×16 packed video grid.
+
+For its 32 sampled output channels, native group1024 → H256-row total relative L2 is **0.71093% → 0.81929%**, RMSE **19.58976 → 22.57586** (15.24% higher), and maximum absolute error **61.10614 → 107.06275**. This is the recorded tail-risk example; it must remain visible alongside the aggregate gains. These observations do not establish full-channel or full-model numerical dominance.
+
+## Reproduce numerical campaigns
+
+[fc2_campaign.py](fc2_campaign.py) packages both scenarios. It validates source/patch hashes, verifies the original model files, rebuilds a private numerical driver, holds the GPU lock through the entire campaign, and records each failed case without overwriting earlier evidence. Synthetic correctness uses the default seed17/M129 and seed29/M257 scenarios above. Calibration verifies that captured tensors still match the original run's hashes before reading them.
+
+```sh
+uv run python tools/perf/fc2_campaign.py --scenario synthetic \
+  --output-dir results/local/h3/fc2-synthetic-NEW
+
+uv run python tools/perf/fc2_campaign.py --scenario calibration \
+  --capture-run results/local/h3/fc2-native-capture-seed42-001 \
+  --output-dir results/local/h3/fc2-calibration-seed42-NEW
+```
+
+The optional repeatable `--synthetic-case SEED:ROWS` selects explicit synthetic cases; it cannot be combined with calibration. A campaign can complete successfully while numerical adoption remains pending. The current campaign records the historical strict gate separately from the user's aggregate-benefit review policy.
+
+Host C compilation, offline Metal 4 shader compilation, and 13 CPU reference/runner tests passed before the generation capture. The portable campaign adds 11 CPU parameter/provenance/failure-preservation tests. Source compilation alone was not counted as GPU correctness.

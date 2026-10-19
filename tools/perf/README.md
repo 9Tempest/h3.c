@@ -114,9 +114,13 @@ No FP8 + Hadamard deployment claim is made.
 The separate [native FC2 Hadamard experiment](experimental-hadamard.md) is
 explicitly opt-in and uses `.cache/h3-hadamard`. Its patch, capture runner,
 independent projection readback driver and NumPy analyzer are included for
-reproduction. Synthetic projection correctness is distinct from the pending
-real-activation, full-trajectory and perceptual gates. It does not modify the
-clean baseline or authorize replacing the original checkpoint.
+reproduction. `fc2_campaign.py` reproduces both synthetic correctness and
+frozen real-activation calibration under the shared GPU lock. Real FC2
+aggregate gains and an explicit tail regression are reported in the
+[follow-up](../../docs/performance/m5-max-512-5s/followup.md); full-model adoption
+remains a separate decision. It does not modify the clean baseline or replace weights.
+The later two-seed model evidence and its limits are in the
+[native follow-up](../../docs/performance/m5-max-512-5s/native-experiments.md).
 
 ## Strict evaluation and progress analysis
 
@@ -197,3 +201,114 @@ for a remaining single-file download. Stop the original downloader and all
 its children first. It preserves the existing prefix, validates response
 ranges and final pinned SHA256, and retains its extra chunks for inspection.
 Its tests use mocked HTTP; throughput improvement is not established.
+
+
+## Prepared checkpoints and native experiments
+
+The second release includes the prepared checkpoint exporter/importer, frozen
+fusion campaign and full-model capture runners. Each verifies its own source
+and patch digests; every runtime is a separate checkout. The following table
+is the source contract, not permission to mix patches:
+
+| Runtime directory | Patch applied to pinned upstream | Purpose |
+| --- | --- | --- |
+| `.cache/h3-baseline` | none | Original clean BF16/upstream INT8 |
+| `.cache/h3-hadamard` | `hadamard.patch` | On-load H256, original-model captures/export |
+| `.cache/h3-prepared` | `prepared-checkpoint.patch` | Import previously verified derived weights |
+| `.cache/h3-fused` | `fused.patch` | On-load H256 with opt-in gate epilogues |
+
+All three patches include the H256/capture changes; do not apply them on top
+of each other. To create an experimental runtime, use a new directory,
+checkout `8974cc055ea9c02fcd14cc27dfda3e1027c05153`, apply the selected patch,
+and run `make -C DIRECTORY -j8 all`. For example:
+
+```sh
+git clone --no-checkout https://github.com/antirez/h3.c.git .cache/h3-prepared
+git -C .cache/h3-prepared checkout --detach 8974cc055ea9c02fcd14cc27dfda3e1027c05153
+git -C .cache/h3-prepared apply "$PWD/tools/perf/prepared-checkpoint.patch"
+make -C .cache/h3-prepared -j8 all
+```
+
+The runners reject unexpected tracked changes, untracked source files, wrong
+pins and automatic precision fallback. Successful build-only validation does
+not establish that a GPU experiment passes. Keep generated files outside the
+runtime checkout.
+
+Create the H256 runtime similarly using `hadamard.patch`, then export and
+assemble a derived checkpoint without deleting or rewriting the original:
+
+```sh
+uv run python tools/perf/prepared_checkpoint.py \
+  --source-dir .cache/h3-hadamard --output-dir .cache/checkpoints/h3-h256
+uv run python tools/perf/derived_checkpoint.py \
+  --checkpoint-dir .cache/checkpoints/h3-h256
+```
+
+These commands perform offline GPU weight preparation and substantial disk
+I/O under the shared lock. Exported weights are local artifacts covered by
+the model's license; no checkpoint payload is included in this repository.
+Use the `derived_manifest_sha256` emitted by the assembly record for later
+`--checkpoint-manifest-sha256` arguments. `run_prepared_checkpoint.py --help`
+describes replay against an existing on-load H256 capture. Prepared loading
+plus fusion is not a supported combined runtime in this release.
+
+`benchmarks.json` fixes the person-turn, rainy-street and water-pour prompts
+and seeds. For each benchmark, run BF16 from the H256 source with the original
+model, then prepared H256 from the derived checkpoint, preserving separate
+output directories. For example:
+
+```sh
+uv run python tools/perf/run_benchmark.py --benchmark-id person-turn-v1 \
+  --mode bf16 --output-dir results/local/h3/person-bf16-NEW
+uv run python tools/perf/run_benchmark.py --benchmark-id person-turn-v1 \
+  --mode hadamard-fc2 --checkpoint-dir .cache/checkpoints/h3-h256 \
+  --checkpoint-manifest-sha256 YOUR_DERIVED_MANIFEST_SHA256 \
+  --output-dir results/local/h3/person-h256-NEW
+uv run python tools/perf/evaluate_benchmark_pair.py \
+  --bf16 results/local/h3/person-bf16-NEW \
+  --hadamard results/local/h3/person-h256-NEW --media \
+  --output-dir results/local/h3/person-evaluation-NEW
+```
+
+`run_long_benchmark.py` fixes the separate full Chinese prompt, image hash,
+seed83 and 512×288/15-second contract in `long_benchmark.json`. Its
+`--input-image` must match the pinned input hash; the private source JPEG is
+not redistributed, so exact image-conditioned reproduction requires access
+to that original image. The runner checks its tokenizer result, conditioning
+geometry and both VAE config pins before inference. `evaluate_long_pair.py`
+retains 362 native frames while comparing separate exact 360-frame exports.
+It rejects media or latent shape/timing mismatches instead of aligning them
+silently.
+
+Build `.cache/h3-fused` from `fused.patch` to use `run_fused_campaign.py` for
+independent full-K references, numerical parity and warmed operator timings.
+`run_fused_experiment.py` captures a complete fox request and checks it
+against `--reference-run` from on-load H256. `run_native_session.py` accepts
+`--source-dir .cache/h3-fused --fusion none|fc2|attention|both`; it holds the
+shared lock and saves exact harness snapshots for one warmup plus three
+same-seed requests. Use the same source and policy for paired performance
+runs. Both flags default to off. Fresh synchronized denoise callbacks and
+cached generation times have different scopes; repeated audio decoder setup
+precludes a compilation-free full-generation claim.
+
+The portable distribution changes local directory/import plumbing from the
+originating experiment repository. Its harness digests therefore differ from
+historical reports; it retains the exact pinned runtime patches and numerical
+contracts. Do not relabel a historical record with a portable harness hash.
+
+
+The [fusion protocol](fused.md) records the full numerical contract and measured
+operator/resident results. `compare_resident.py` validates original local run
+evidence against the exact portable harness pins; it does not accept historical
+main-repository records with different harness hashes. Its exported timing
+comparison is descriptive and retains separate raw arrays and process order.
+
+```sh
+uv run python tools/perf/compare_resident.py \
+  --baseline-run results/local/h3/fused-none-NEW/run.json \
+  --candidate-run results/local/h3/fused-attention-NEW/run.json \
+  --output-dir results/local/h3/resident-comparison-NEW
+```
+
+[Distribution source digests](distribution-provenance.json) distinguish unchanged
+runtime patches from the portable harness adaptation.

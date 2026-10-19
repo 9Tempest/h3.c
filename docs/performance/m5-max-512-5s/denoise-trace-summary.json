@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "source": "xctrace Metal System Trace / metal-gpu-intervals",
+  "scope": "target H3 process; attached 15-second partial Euler denoising observation, with FC2/latent diagnostics and profiling overhead",
+  "profiling_overhead": true,
+  "interval_count": 1665,
+  "observed_span_ms": 10870.592458,
+  "gpu_active_union_ms": 10773.800753,
+  "observed_busy_fraction": 0.9910960046221982,
+  "channels": {
+    "Compute": {
+      "interval_count": 1665,
+      "gpu_active_union_ms": 10773.800753
+    }
+  },
+  "warning": "Not a per-kernel latency or hot-loop-only utilization measurement",
+  "source_xml_sha256": "2b7bcb4457f2a4ea02040e4fa694a7b4330bc7ebd64c695ef39a61f4052de48e",
+  "summarizer_sha256": "883ee980bbf4c1f1ac821eadfa6a8ba177e94940d124dba0bade4cec88efe889",
+  "label_attribution": "none; intervals do not identify QKV/SDPA/MLP operations",
+  "baseline_latency_measurement": false,
+  "raw_summary_sha256": "7aa3db9bb59b90c830c1864cd415f6443e1af1537924557c36cfbda4a4c22fee",
+  "capture_run_sha256": "393e7cddf16db3dea1bc481c099d3988950626eb98abce8100c795469576eb47",
+  "runtime_source_sha256": "833076975eeaaf14b0a9db01f6237d7de77930034222b1dd3b85cca7721f04ec",
+  "runtime_binary_sha256": "915881e195b1a1214d09a6f891bc58b291fd3820a77df7a437a5aa74b99a1e7c",
+  "patch_sha256": "84065e6139c842aee2cb6d037a6c72ecfa9895e07b1696e9bf638bde3a5a8d1e",
+  "requested_observation_seconds": 15,
+  "observed_interval_span_seconds": 10.870592457999999,
+  "interpretation": "The union covers 99.11% of the span between the first and last observed intervals, not the full requested 15 seconds. This diagnostic sample is not shader occupancy, whole-model utilization, baseline GPU time or an operation ranking."
+}

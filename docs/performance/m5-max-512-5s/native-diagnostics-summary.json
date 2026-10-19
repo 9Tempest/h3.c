@@ -1,0 +1,913 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "started_utc": "2026-10-18T22:44:37.113287+00:00",
+  "finished_utc": "2026-10-18T22:48:43.621436+00:00",
+  "benchmark": "fox-winter-t2va-v1",
+  "mode": "upstream-int8",
+  "seed": 42,
+  "prompt": "A red fox walks through fresh snow in a pine forest. Medium tracking shot, natural winter light, realistic fur, soft footsteps and wind.",
+  "width": 512,
+  "height": 512,
+  "seconds": 5,
+  "steps": 20,
+  "active_dit_blocks": 50,
+  "reuse": 1,
+  "core_reuse": 1,
+  "reference_rope": true,
+  "diagnostic": true,
+  "capture_fc2": true,
+  "capture_latents": true,
+  "quality": "not evaluated",
+  "checkpoint_replacement_eligible": false,
+  "upstream": {
+    "revision": "8974cc055ea9c02fcd14cc27dfda3e1027c05153",
+    "dirty": true,
+    "status": "M h3_dit.c\n M h3_gpu.h\n M h3_gpu.m\n M h3_shaders.metal",
+    "source_sha256": "833076975eeaaf14b0a9db01f6237d7de77930034222b1dd3b85cca7721f04ec",
+    "binary_sha256": "915881e195b1a1214d09a6f891bc58b291fd3820a77df7a437a5aa74b99a1e7c",
+    "library_sha256": "c3a6fd9bff702160386f6c74ce52047630520d7039390bc2edace1a010230106",
+    "repository": "https://github.com/antirez/h3.c"
+  },
+  "patch": {
+    "patch_sha256": "84065e6139c842aee2cb6d037a6c72ecfa9895e07b1696e9bf638bde3a5a8d1e",
+    "source_sha256": "833076975eeaaf14b0a9db01f6237d7de77930034222b1dd3b85cca7721f04ec"
+  },
+  "harness_files": {
+    "run_fc2_experiment.py": "99b7ef56a9e43f9a2fe62e2e50b94f30c4a3f44819a2201d4eb0e575cab0a562",
+    "run.py": "194f80be30280b198a2a85b7d541c040c33e30fc1b4a7c86c1393fc987a710e3",
+    "fc2_validate.c": "28db9b5f50ce1bcbcc99a985f8cc0108324105d386ea37a4186b206e8ffded42",
+    "fc2_analyze.py": "bfd1855828ea3ccce14fd791b31dcaa2d6840c0f7f9164bbec7e8d5045d86792",
+    "hadamard.patch": "84065e6139c842aee2cb6d037a6c72ecfa9895e07b1696e9bf638bde3a5a8d1e"
+  },
+  "fc2_validation": [
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 0,
+        "block": 0,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step00-block00.bf16",
+        "elements": 229376,
+        "sha256": "b5621505ae8ae7167af8d7b451c301fa43777729b0c23f626499bf5afd9d868c",
+        "finite": true
+      },
+      "metadata_sha256": "1bfe0b0693424c89713a8ad7fa53c2b1ccda2b25b567bb890d0f4ea3ec05b1c8"
+    },
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 0,
+        "block": 24,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step00-block24.bf16",
+        "elements": 229376,
+        "sha256": "dab25c4c4cff41a3ccffb0bd0751257cf0864eb3392e23cc633b80cb32199c7a",
+        "finite": true
+      },
+      "metadata_sha256": "9a537e97a76dea718fc5bd4f333016ab52b5610a3db20ce2265b64a1dcca6b01"
+    },
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 0,
+        "block": 49,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step00-block49.bf16",
+        "elements": 229376,
+        "sha256": "04d68dc0ac076c74aa1b11b9efb0aa715403a4dbb0a779eb5ed98c9c9e2cd35c",
+        "finite": true
+      },
+      "metadata_sha256": "e76bf2e7d0fc403f38ca3dc044f712272d3363b78d45ac1ea006c3d41e2a4622"
+    },
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 10,
+        "block": 0,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step10-block00.bf16",
+        "elements": 229376,
+        "sha256": "c28b0b6ba93db50006098199de66fd831f42e5e4c10ad896995f0058159c2a78",
+        "finite": true
+      },
+      "metadata_sha256": "d42f47abc48f2287e45f7828dc2e76682db024d19ed8a07c41e44d9a090e2a31"
+    },
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 10,
+        "block": 24,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step10-block24.bf16",
+        "elements": 229376,
+        "sha256": "edeb9923b819df89f7577d9dc75071d3d92ca232ed0c4cecdcb6f0a8dcf4a427",
+        "finite": true
+      },
+      "metadata_sha256": "2cc78a6eece184af148bb2a98ce4bca01ce3aa1b2b8e1520d8f956ce0c424485"
+    },
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 10,
+        "block": 49,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step10-block49.bf16",
+        "elements": 229376,
+        "sha256": "d5c2ab762d0025ac90b40913531b308a9cffcd7e1581f6de1e3c7d4ee3035517",
+        "finite": true
+      },
+      "metadata_sha256": "861cc19c244c2ef5b2a2459b72f242255f62290158f7f6bef602fd0ac69a1c13"
+    },
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 19,
+        "block": 0,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step19-block00.bf16",
+        "elements": 229376,
+        "sha256": "c356ef0a8ac82c2ccfc9f7d1085b5bc0ea645f5ac4bf916ec3108e4773cb63ff",
+        "finite": true
+      },
+      "metadata_sha256": "072db18a16464f0bdaa4481958745486c7ebef658a310fa176580d1f3a2420d1"
+    },
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 19,
+        "block": 24,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step19-block24.bf16",
+        "elements": 229376,
+        "sha256": "0abcd8e88b8bed08a74d3123971fd4c39cc4578b8a21185a5acdc612a954970b",
+        "finite": true
+      },
+      "metadata_sha256": "87fd8f4af13bd852b849086623775d44a67521f6232b242abf6f6faa96bec552"
+    },
+    {
+      "metadata": {
+        "schema": 1,
+        "scope": "diagnostic_with_extra_gpu_waits",
+        "input": "post_SwiGLU_BF16_on_native_INT8_FC1_trajectory",
+        "step": 19,
+        "block": 49,
+        "packed_rows": 9914,
+        "sample_rows": 16,
+        "width": 14336,
+        "int8_qkv": 1,
+        "int8_attention_out": 1,
+        "hadamard_fc2": 0,
+        "row_ids": [
+          0,
+          14,
+          27,
+          28,
+          235,
+          441,
+          442,
+          5178,
+          9913,
+          1239,
+          2478,
+          3717,
+          4956,
+          6195,
+          7434,
+          8673
+        ],
+        "segments": [
+          {
+            "kind": 0,
+            "start": 0,
+            "stop": 28
+          },
+          {
+            "kind": 4,
+            "start": 28,
+            "stop": 442
+          },
+          {
+            "kind": 5,
+            "start": 442,
+            "stop": 9914
+          }
+        ],
+        "nonfinite": 0,
+        "dtype": "BF16 little endian"
+      },
+      "tensor": {
+        "file": "fc2-step19-block49.bf16",
+        "elements": 229376,
+        "sha256": "8a34ce7ac76bb9db082f4522f1f0aaccac1f3590f695372f6844bf17c5998fda",
+        "finite": true
+      },
+      "metadata_sha256": "748e9becaeba85596230349218fa249a631827e064d2e7817141a6c54dfbf48a"
+    }
+  ],
+  "latent_validation": {
+    "metadata": {
+      "schema": 1,
+      "scope": "diagnostic_CPU_readback_after_completed_GPU_Euler",
+      "dtype": "float32_little_endian",
+      "seed": 42,
+      "seed_source": "caller_declared_H3_CAPTURE_SEED_verify_against_request_manifest",
+      "completed_steps": 20,
+      "final_video_shape": [
+        24,
+        37,
+        32,
+        32
+      ],
+      "final_audio_shape": [
+        32,
+        2,
+        207
+      ],
+      "final_layout": "unpacked_contiguous_VAE_input_before_decoder",
+      "per_step_video_shape": [
+        9472,
+        96
+      ],
+      "per_step_audio_shape": [
+        414,
+        32
+      ],
+      "per_step_layout": "packed_model_rows_after_Euler_before_unpack",
+      "final_video_sigma": 0,
+      "final_audio_sigma": 0,
+      "int8_mlp": 1,
+      "int8_qkv": 1,
+      "int8_attention_out": 1,
+      "hadamard_fc2": 0,
+      "finite": true
+    },
+    "tensors": [
+      {
+        "file": "euler-step00-audio.f32",
+        "elements": 13248,
+        "sha256": "703d65a4488fb5daf9a6efcdf5418eb5bccc270ea9a506b4da58d4bb6e709633",
+        "finite": true
+      },
+      {
+        "file": "euler-step00-video.f32",
+        "elements": 909312,
+        "sha256": "23756e91a2c070f54ee1b37cc4d04d32c4609b117b60785cefca17545664db9a",
+        "finite": true
+      },
+      {
+        "file": "euler-step01-audio.f32",
+        "elements": 13248,
+        "sha256": "a22de3f9006ee301abde957d86d9fb82dbc7f8147e47a827acea81a69935bf69",
+        "finite": true
+      },
+      {
+        "file": "euler-step01-video.f32",
+        "elements": 909312,
+        "sha256": "f51dbe12292929fe460e2ea213792a4d7ff0a26579ab09d4ff2b2f850344ab87",
+        "finite": true
+      },
+      {
+        "file": "euler-step02-audio.f32",
+        "elements": 13248,
+        "sha256": "afd6a7f4a9108ebd83eccc815120a23155f267a6faaf7ec11d54f74745725b14",
+        "finite": true
+      },
+      {
+        "file": "euler-step02-video.f32",
+        "elements": 909312,
+        "sha256": "3affebb90c51a9d5b446502a30307d1b5aa265d564d745f1832107d04ca767fc",
+        "finite": true
+      },
+      {
+        "file": "euler-step03-audio.f32",
+        "elements": 13248,
+        "sha256": "0c215c45009ce03720d7ef157d334bdfd29a95003efd52f592b2acab2ffd893b",
+        "finite": true
+      },
+      {
+        "file": "euler-step03-video.f32",
+        "elements": 909312,
+        "sha256": "d67da40dfd12f0271694f4f2051e2752759658b8986720d441fec0a96a39d2f1",
+        "finite": true
+      },
+      {
+        "file": "euler-step04-audio.f32",
+        "elements": 13248,
+        "sha256": "865bba45932d7c1e37fddd9704e464f262aa2d577b25e7e6cbc5d37585133920",
+        "finite": true
+      },
+      {
+        "file": "euler-step04-video.f32",
+        "elements": 909312,
+        "sha256": "b620e21267cf0a58468e95c16d3bafec425d84a66b6aed03ef2c823bc0d1a572",
+        "finite": true
+      },
+      {
+        "file": "euler-step05-audio.f32",
+        "elements": 13248,
+        "sha256": "bee8578257f702662ad7ff31fbbc43bb9d819aa769a3e38a27db2c2da6da277e",
+        "finite": true
+      },
+      {
+        "file": "euler-step05-video.f32",
+        "elements": 909312,
+        "sha256": "3579c473677a807c11f7a852f4ce269aeb4a6e3b8ff82fb5e233bfd9b8a80fdd",
+        "finite": true
+      },
+      {
+        "file": "euler-step06-audio.f32",
+        "elements": 13248,
+        "sha256": "32cf2399cc00ad6491bd3be032c4e8a7b5101c1e43e12697366afb6db2a3d8c2",
+        "finite": true
+      },
+      {
+        "file": "euler-step06-video.f32",
+        "elements": 909312,
+        "sha256": "af770cf4fe78915887b181622b352c57da4214123043a61d0803859fcaa42e27",
+        "finite": true
+      },
+      {
+        "file": "euler-step07-audio.f32",
+        "elements": 13248,
+        "sha256": "fd2624513ff195b25c2ebe04507b4cff99bc3f5b29ceb3de4711335cc565e906",
+        "finite": true
+      },
+      {
+        "file": "euler-step07-video.f32",
+        "elements": 909312,
+        "sha256": "4c8a3ccbe15200268e98519e0e68ad9af4dd1ad6f337363f3c98d2d3b3648445",
+        "finite": true
+      },
+      {
+        "file": "euler-step08-audio.f32",
+        "elements": 13248,
+        "sha256": "0b392f51abc0499b9481c703fdb32cb44599197921113aeae3f41c60cde5832c",
+        "finite": true
+      },
+      {
+        "file": "euler-step08-video.f32",
+        "elements": 909312,
+        "sha256": "847d0c318c4617e10bc250cad44df9b434bb4d1d5a47a445bb858fde59cea6b7",
+        "finite": true
+      },
+      {
+        "file": "euler-step09-audio.f32",
+        "elements": 13248,
+        "sha256": "2bc595303c263bb80cf9cdc78aa6f33251ba2968e90d748c627f6788b3852897",
+        "finite": true
+      },
+      {
+        "file": "euler-step09-video.f32",
+        "elements": 909312,
+        "sha256": "8f1436a242ed96e60b7ba914dd8b64969b243cfe117c330219955fe626c98a9c",
+        "finite": true
+      },
+      {
+        "file": "euler-step10-audio.f32",
+        "elements": 13248,
+        "sha256": "acfe0d1b82339c0ed9b5e935adbf1aaf230f258683c221f314b13d6f11319ee9",
+        "finite": true
+      },
+      {
+        "file": "euler-step10-video.f32",
+        "elements": 909312,
+        "sha256": "6df5011ed9e6353bc01236e0ec5b4376230ec00883bd79d5b1f80cc4e4f33d4a",
+        "finite": true
+      },
+      {
+        "file": "euler-step11-audio.f32",
+        "elements": 13248,
+        "sha256": "8f7d69af1ad0c8f403b024cb40da300004268cf6ba46e21b243cea2cdb39a630",
+        "finite": true
+      },
+      {
+        "file": "euler-step11-video.f32",
+        "elements": 909312,
+        "sha256": "71960a334a5a23e3a97bc457dc882a028cb4a610971328562588424fb839d0ce",
+        "finite": true
+      },
+      {
+        "file": "euler-step12-audio.f32",
+        "elements": 13248,
+        "sha256": "b2d559ba9976dba303315bf4e277f917e64e2096e35105adeaab54cb06515984",
+        "finite": true
+      },
+      {
+        "file": "euler-step12-video.f32",
+        "elements": 909312,
+        "sha256": "ffe76a5f0007a6aa85de05802006b9f8620100107ad88062e0a32ce16666fbdc",
+        "finite": true
+      },
+      {
+        "file": "euler-step13-audio.f32",
+        "elements": 13248,
+        "sha256": "f7cde6b8ac38d5826f984d65e6f5624e037685fb44dbfc631d39bdda90da47a3",
+        "finite": true
+      },
+      {
+        "file": "euler-step13-video.f32",
+        "elements": 909312,
+        "sha256": "b1b646efdf8ee7fe49797da20d8ccc04d58b34ab038d79ebba742be71ee0586e",
+        "finite": true
+      },
+      {
+        "file": "euler-step14-audio.f32",
+        "elements": 13248,
+        "sha256": "4aec8b6eb40eaf7faebdfcadfd2cbbdb850c59fdf6b0b8a9299d8f1047772d7f",
+        "finite": true
+      },
+      {
+        "file": "euler-step14-video.f32",
+        "elements": 909312,
+        "sha256": "26dfb13aee8e56c9cf4762611793a259215e3763472050c7a696d9c4c1db076f",
+        "finite": true
+      },
+      {
+        "file": "euler-step15-audio.f32",
+        "elements": 13248,
+        "sha256": "27a40127125af95ef075c7fea1f9c745ef3b0b3dd3dd11b60754feb2735fd697",
+        "finite": true
+      },
+      {
+        "file": "euler-step15-video.f32",
+        "elements": 909312,
+        "sha256": "f47f6a7431d9fc099c0819bada7040023af2f59b55287586cb1f031d0ef99577",
+        "finite": true
+      },
+      {
+        "file": "euler-step16-audio.f32",
+        "elements": 13248,
+        "sha256": "cf57d4d0f4c4130798ab5c0944e3541c6ae6a7a0f91bf8eb276f5d459ec04767",
+        "finite": true
+      },
+      {
+        "file": "euler-step16-video.f32",
+        "elements": 909312,
+        "sha256": "408864cb7aad0a9bb797ae73ed30f6fc913cdd09002c7715da792e97e2903301",
+        "finite": true
+      },
+      {
+        "file": "euler-step17-audio.f32",
+        "elements": 13248,
+        "sha256": "c348af733c2029f70a9a0eecd6b84cbcf350d25740dccc70bb8fe92d3d30a68c",
+        "finite": true
+      },
+      {
+        "file": "euler-step17-video.f32",
+        "elements": 909312,
+        "sha256": "0cbe7206dd302d3c958c7c2da35cbac998b1fd4e2bc39c8f36eaa75d8b7d5459",
+        "finite": true
+      },
+      {
+        "file": "euler-step18-audio.f32",
+        "elements": 13248,
+        "sha256": "4d9b858ed9115a1fe193022d5eb0637a4922f77450e109583b2132b28cd1cc25",
+        "finite": true
+      },
+      {
+        "file": "euler-step18-video.f32",
+        "elements": 909312,
+        "sha256": "f92a3b4a48155b298623e63efda655aa1e393fe68bbde50bf2c5dd3ab7cf455d",
+        "finite": true
+      },
+      {
+        "file": "euler-step19-audio.f32",
+        "elements": 13248,
+        "sha256": "8da08034a6554196119a3f89d16637bee638a6605eab6c1afec4fa97ca44beeb",
+        "finite": true
+      },
+      {
+        "file": "euler-step19-video.f32",
+        "elements": 909312,
+        "sha256": "cf6451d2dc4673e732f377e94aca8694611605d7e5221975f5858416cf6798b8",
+        "finite": true
+      },
+      {
+        "file": "final-audio.f32",
+        "elements": 13248,
+        "sha256": "54551ba41305dc639e592c226def0bec81f16f009ae1e7cc52c10b8b44edee91",
+        "finite": true
+      },
+      {
+        "file": "final-video.f32",
+        "elements": 909312,
+        "sha256": "a629c91969b5082ad47faebfd4ac1ac94f5922926253b1c5de8cfcda43b68153",
+        "finite": true
+      }
+    ],
+    "original_metadata_sha256": "d32852f576a7771701624a417395579924aceba135d304aad5b81b5248944a31",
+    "removed_metadata_fields": [
+      "time_unix_seconds",
+      "time_monotonic_seconds"
+    ]
+  },
+  "original_video": {
+    "width": 512,
+    "height": 512,
+    "frames": 124,
+    "fps": 24,
+    "duration_seconds": 5.166667,
+    "file": "original.mp4",
+    "sha256": "2b83851901518cfa6ca14f9e378294abc2b725116a20de556087fa4391d3bfee"
+  },
+  "exact_video": {
+    "width": 512,
+    "height": 512,
+    "frames": 120,
+    "fps": 24,
+    "duration_seconds": 5.0,
+    "file": "video-5s.mp4",
+    "sha256": "993e73621f4028c9759058457f0f41ee2a06dd865bf8691de28f06baddcc3020"
+  },
+  "raw_run_sha256": "393e7cddf16db3dea1bc481c099d3988950626eb98abce8100c795469576eb47",
+  "timing_scope": "Diagnostic capture with extra GPU waits/readbacks and concurrent trace attachment; excluded from baseline latency.",
+  "shape": {
+    "packed_rows": 9914,
+    "prompt_rows": 28,
+    "stereo_audio_rows": 414,
+    "video_rows": 9472,
+    "video_latent_t": 37,
+    "shape_evidence": "Observed FC2 capture metadata segment boundaries in all 9 sampled operations."
+  },
+  "artifact_equivalence": {
+    "comparison": "exact 120-frame MP4 versus earlier unmodified upstream INT8 seed42 run",
+    "sha256": "993e73621f4028c9759058457f0f41ee2a06dd865bf8691de28f06baddcc3020",
+    "byte_identical": true,
+    "scope": "Output equality for this seed/recipe only; not all-layer or all-seed parity."
+  },
+  "redaction_note": "Runtime counters and raw commands omitted; capture wall-clock/monotonic timestamps removed from latent metadata. Raw immutable run hash retained. No tensor payloads or weights distributed.",
+  "model": {
+    "repository": "MiniMaxAI/MiniMax-H3",
+    "revision": "42ed227ee7df40d41602854ae760620d6eb651fe",
+    "manifest_sha256": "7597d33ca71af128705e802150b4b39395cf20f96bddc45d2041d668145c27be"
+  }
+}

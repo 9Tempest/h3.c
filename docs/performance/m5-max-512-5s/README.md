@@ -1,5 +1,10 @@
 # M5 Max: a 512 × 512, five-second H3 inference observation
 
+The [native QKV and QKV/FC1 AdaLN-H256 follow-up](kernel-integration.md) adds
+actual runtime integration, independent references, two-seed resident timing and
+six new candidate samples. Both new families remain opt-in after measured
+performance and numerical regressions against the existing FC2-H256 baseline.
+
 On one Apple M5 Max, the pinned upstream INT8 path completed this request in
 **182.455 seconds**, versus **252.938 seconds** with the upstream BF16 projection
 overrides. The observed process-time ratio is **1.386×**. Most of the difference
